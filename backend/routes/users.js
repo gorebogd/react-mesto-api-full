@@ -1,8 +1,33 @@
-const router = require('express').Router();
-const { getUsers, getUser, createUser } = require('../controllers/users');
+const userRouter = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
+const CastError = require('../errors/CastError');
+const {
+  getCurrentUserInfo,
+  updateUser,
+  updateUserAvatar,
+} = require('../controllers/users.js');
 
-router.get('/users', getUsers);
-router.get('/users/:id', getUser);
-router.post('/users', createUser);
+const linkValidator = (value) => {
+  if (!validator.isURL(value)) {
+    throw new CastError('Переданы некорректные данные');
+  }
+  return value;
+};
 
-module.exports = router;
+userRouter.get('/me', getCurrentUserInfo);
+
+userRouter.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}), updateUser);
+
+userRouter.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatarUrl: Joi.string().required().custom(linkValidator),
+  }),
+}), updateUserAvatar);
+
+module.exports = userRouter;

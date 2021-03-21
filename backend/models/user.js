@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
+const AuthError = require('../errors/AuthError');
 const regex = require('../utils/regex');
 
 const userSchema = new mongoose.Schema({
@@ -6,23 +9,56 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
+    default: 'Жак-Ив Кусто',
+  },
+  email: {
+    type: String,
     required: true,
+    unique: true,
+    validate: {
+      validator(v) {
+        return validator.isEmail(v);
+      },
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+    select: false,
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true,
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: true,
     validate: {
-      validator: (v) => regex.test(v),
-      message: 'Невалидная ссылка',
+      validator(v) {
+        return regex.test(v);
+      },
     },
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
 });
+
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new AuthError('Неправильная почта или пароль');
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new AuthError('Неправильная почта или пароль');
+          }
+          return user;
+        });
+    });
+};
 
 const userModel = mongoose.model('user', userSchema);
 

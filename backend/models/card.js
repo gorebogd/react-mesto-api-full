@@ -4,36 +4,29 @@ const regex = require('../utils/regex');
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
+    required: true,
     minlength: 2,
     maxlength: 30,
-    required: true,
   },
   link: {
     type: String,
     required: true,
     validate: {
-      validator: (v) => regex.test(v),
-      message: 'Невалидная ссылка',
+      validator(v) {
+        return regex.test(v);
+      },
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
     required: true,
   },
-  likes: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
-    }],
-    default: [],
-  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+  }],
   createdAt: {
     type: Date,
-    default: Date.now(),
   },
 });
 
-const cardModel = mongoose.model('card', cardSchema);
-
-module.exports = cardModel;
+module.exports = mongoose.model('card', cardSchema);
