@@ -1,0 +1,7 @@
+.cards__card {
+    background: #FFFFFF;
+    border-radius: 10px;
+    max-width: 282px;
+    width: 100%;
+    position: relative;
+}
