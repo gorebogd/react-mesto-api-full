@@ -120,7 +120,7 @@ function getUsers(req, res, next) {
     .then((data) => res.status(200).send(data))
     .catch(next);
 }
-// eslint-disable-next-line consistent-return
+
 function getUser(req, res, next) {
   const { authorization } = req.body;
 

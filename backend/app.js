@@ -20,6 +20,7 @@ mongoose.connect(process.env.MONGO_URL = 'mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
+  useUnifiedTopology: true,
 });
 
 const corsOptions = {
@@ -89,5 +90,5 @@ app.use((err, req, res, next) => {
   });
   next();
 });
-// eslint-disable-next-line no-console
+
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
