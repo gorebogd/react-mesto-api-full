@@ -1,30 +1,31 @@
+import env from 'react-dotenv';
+
 class Api {
-    constructor({address, token, groupId}) {
-        this._token = token;
-        this._groupId = groupId;
-        this._address = address;
+    constructor({ url }) {
+        this._url = url;
     }
 
     getResponse(res) {
         return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
     }
 
-    getUserInfo() {
-        return fetch(`${this._address}/${this._groupId}/users/me`, {
+    getUserInfo(token) {
+        return fetch(`${this._url}/users/me`, {
             headers: {
-                authorization: this._token
-            }
+                authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
         })
             .then(this.getResponse)
     }
 
     setUserInfo({name, about}) {
-        return fetch(`${this._address}/${this._groupId}/users/me`, {
+        return fetch(`${this._url}/users/me`, {
             method: 'PATCH',
             headers: {
-                authorization: this._token,
-                'Content-Type': 'application/json'
-            },
+                authorization: `Bearer ${localStorage.getItem('jwt')}`,
+                'Content-Type': 'application/json',
+              },
             body: JSON.stringify({
                 name,
                 about
@@ -34,12 +35,12 @@ class Api {
     }
 
     setUserAvatar({avatar}) {
-        return fetch(`${this._address}/${this._groupId}/users/me/avatar`, {
+        return fetch(`${this._url}/users/me/avatar`, {
             method: 'PATCH',
             headers: {
-                authorization: this._token,
+                authorization: `Bearer ${localStorage.getItem('jwt')}`,
                 'Content-Type': 'application/json',
-            },
+              },
             body: JSON.stringify({
                 avatar,
             }),
@@ -47,21 +48,23 @@ class Api {
             .then(this.getResponse)
     }
 
-    getCards() {
-        return fetch(`${this._address}/${this._groupId}/cards`, {
+    getCards(token) {
+        return fetch(`${this._url}/cards`, {
+            method: 'GET',
             headers: {
-                authorization: this._token
-            }
+              authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
         })
             .then(this.getResponse)
     }
 
     addCard({name, link}) {
-        return fetch(`${this._address}/${this._groupId}/cards`, {
+        return fetch(`${this._url}/cards`, {
             method: 'POST',
             headers: {
-                authorization: this._token,
-                'Content-Type': 'application/json'
+              authorization: `Bearer ${localStorage.getItem('jwt')}`,
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 name,
@@ -72,32 +75,32 @@ class Api {
     }
 
     removeCard(cardId) {
-        return fetch(`${this._address}/${this._groupId}/cards/${cardId}`, {
+        return fetch(`${this._url}/cards/${cardId}`, {
             method: 'DELETE',
             headers: {
-                authorization: this._token,
-            }
+              authorization: `Bearer ${localStorage.getItem('jwt')}`,
+              'Content-Type': 'application/json',
+            },
         })
             .then(this.getResponse)
     }
 
-    toggleLike(cardID, like) {
-        return fetch(`${this._address}/${this._groupId}/cards/likes/${cardID}`, {
+    toggleLike(cardId, like) {
+        return fetch(`${this._url}/cards/${cardId}/likes`, {
             method: like ? 'PUT' : 'DELETE',
             headers: {
-                authorization: this._token,
-                'Content-Type': 'application/json'
-            }
+                authorization: `Bearer ${localStorage.getItem('jwt')}`,
+                'Content-Type': 'application/json',
+              },
         })
             .then(this.getResponse)
     }
 }
 
 const api = new Api({
-    address: "https://mesto.nomoreparties.co/v1",
-    groupId: `cohort-16`,
-    token: `6b84de2d-b5c7-4b45-ba81-be44fff680e4`,
-});
-
+    url: env.BASE_URL,
+  });
+  
+console.log(api.url) 
 export default api;
 
