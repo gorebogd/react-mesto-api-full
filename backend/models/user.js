@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const AuthError = require('../errors/AuthError');
-const regex = require('../utils/regex');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -37,6 +36,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
+        const regex = /^(https?:\/\/)(www\.)?[\w-]+(\.[a-z])+[\w~!@#$%&*()-+=:;\\'",.?/]+#?/gi;
         return regex.test(v);
       },
     },

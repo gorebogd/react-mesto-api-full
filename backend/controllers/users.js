@@ -102,7 +102,7 @@ function updateUser(req, res, next) {
 
 function updateUserAvatar(req, res, next) {
   User.findByIdAndUpdate(req.user.id,
-    { avatar: req.body.avatarUrl },
+    { avatar: req.body.avatar },
     {
       new: true,
       runValidators: true,

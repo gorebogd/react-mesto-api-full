@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from './Card';
 import Header from "./Header";
 import Footer from "./Footer";
@@ -9,6 +9,12 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext';
 function Main(props) {
 
     const currentUser = React.useContext(CurrentUserContext);
+    const jwt = localStorage.getItem('jwt');
+
+
+    useEffect(() => {
+        props.renderCards(jwt);
+      }, []);
 
     return (
         <>

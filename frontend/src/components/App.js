@@ -25,15 +25,6 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
   }
@@ -55,7 +46,12 @@ function App() {
     api
       .setUserInfo(userData)
       .then((res) => {
-        setCurrentUser(res);
+        const { name, about } = res;
+        setCurrentUser({
+          ...currentUser,
+          name,
+          about,
+        });
         closeAllPopups();
       })
       .catch((err) => console.log(err));
@@ -65,7 +61,11 @@ function App() {
     api
       .setUserAvatar(avatarData)
       .then((res) => {
-        setCurrentUser(res);
+        const { avatar } = res;
+        setCurrentUser({
+          ...currentUser, 
+          avatar,
+        });
         closeAllPopups();
       })
       .catch((err) => console.log(err));
@@ -91,12 +91,18 @@ function App() {
     };
   }, []);
 
+
+
   const [cards, setCards] = useState([]);
 
+  function renderCards(jwt) {
+    api.getCards(jwt).then((cards) => setCards(cards.reverse()));
+  }
+
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.find(item => item === currentUser._id)
     api
-      .toggleLike(card._id, !isLiked)
+      .toggleLike(card._id, isLiked)
       .then((newCard) => {
         const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
         setCards(newCards);
@@ -113,15 +119,6 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-
-  useEffect(() => {
-    api
-      .getCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   function handleAddPlaceSubmit(newCard) {
     api
@@ -141,9 +138,10 @@ function App() {
         if (res.token) {
           localStorage.setItem("jwt", res.token);
           localStorage.setItem("email", email);
+          setCurrentUser(res);
           setLoggedIn(true);
-          history.push("/feed");
-        }
+        };
+        tokenCheck();
       })
       .catch((err) => console.log(err));
   }
@@ -185,6 +183,7 @@ function App() {
         .getLoginInfo(jwt)
         .then((res) => {
           if (res) {
+            setCurrentUser(res)
             setLoggedIn(true);
             history.push("/feed");
           }
@@ -229,6 +228,7 @@ function App() {
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           cards={cards}
+          renderCards={renderCards}
           onCardLike={handleCardLike}
           onCardDelete={handleCardDelete}
           handleSignOut={handleSignOut}
