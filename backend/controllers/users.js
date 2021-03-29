@@ -141,7 +141,7 @@ function getUser(req, res, next) {
 
   const { userId } = req.params;
   return User.findById(userId)
-    .orFail(new NotFoundError('Запрашиваемый ресурс не найден'))
+    .orFail(new NotFoundError('Запрашиваемый пользователь не найден'))
     .then((user) => res.status(200).send(user))
     .catch(next);
 }
