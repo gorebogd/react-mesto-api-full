@@ -25,7 +25,7 @@ function createCard(req, res, next) {
 function deleteCard(req, res, next) {
   const { cardId } = req.params;
   Card.findById(cardId)
-    .orFail(new NotFoundError('Запрашиваемый ресурс не найден'))
+    .orFail(new NotFoundError('Карточка не найдена'))
     .then((card) => {
       if (!card) throw new CastError('Неверный id карточки');
       if (card.owner.toString() === req.user.id.toString()) {
@@ -46,7 +46,7 @@ function addLike(req, res, next) {
     { $addToSet: { likes: req.user.id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Запрашиваемый ресурс не найден'))
+    .orFail(new NotFoundError('Карточка не найдена'))
     .then((card) => res.status(200).send(card))
     .catch(next);
 }
@@ -58,7 +58,7 @@ function removeLike(req, res, next) {
     { $pull: { likes: req.user.id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Запрашиваемый ресурс не найден'))
+    .orFail(new NotFoundError('Карточка не найдена'))
     .then((card) => res.status(200).send(card))
     .catch(next);
 }

@@ -3,6 +3,8 @@ const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
 const CastError = require('../errors/CastError');
 const {
+  getUser,
+  getUsers,
   getCurrentUserInfo,
   updateUser,
   updateUserAvatar,
@@ -14,6 +16,10 @@ const linkValidator = (value) => {
   }
   return value;
 };
+
+userRouter.get('/users', getUsers);
+
+userRouter.get('/users/:userId', getUser);
 
 userRouter.get('/me', getCurrentUserInfo);
 

@@ -7,6 +7,8 @@
 https://gorebogd.nomoredomains.icu 
 https://api.gorebogd.nomoredomains.icu
 
+ip-адрес сервера - 130.193.57.71
+
 Для запуска приложения вам понадобятся .env файлы в директориях frontend и backend.
 Первый должен содердать BASE_URL сервера.
 Второй - NODE_ENV, SECRET_KEY, CORS_ORIGIN
