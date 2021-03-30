@@ -122,23 +122,6 @@ function getUsers(req, res, next) {
 }
 
 function getUser(req, res, next) {
-  const { authorization } = req.body;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new AuthError('Необходима авторизация');
-  }
-
-  const token = authorization.replace('Bearer ', '');
-
-  try {
-    jwt.verify(
-      token,
-      process.env.NODE_ENV === 'production' ? process.env.SECRET_KEY : 'dev-key',
-    );
-  } catch (err) {
-    throw new AuthError('Необходима авторизация');
-  }
-
   const { userId } = req.params;
   return User.findById(userId)
     .orFail(new NotFoundError('Запрашиваемый пользователь не найден'))

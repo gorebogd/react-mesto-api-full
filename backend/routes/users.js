@@ -19,11 +19,11 @@ const linkValidator = (value) => {
 
 userRouter.get('/', getUsers);
 
+userRouter.get('/me', getCurrentUserInfo);
+
 userRouter.get('/:userId', celebrate({
   params: Joi.object().keys({ userId: Joi.string().required().length(24).hex() }),
 }), getUser);
-
-userRouter.get('/me', getCurrentUserInfo);
 
 userRouter.patch('/me', celebrate({
   body: Joi.object().keys({
