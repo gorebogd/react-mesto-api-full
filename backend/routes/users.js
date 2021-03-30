@@ -19,7 +19,9 @@ const linkValidator = (value) => {
 
 userRouter.get('/users', getUsers);
 
-userRouter.get('/users/:userId', getUser);
+userRouter.get('/users/:userId', celebrate({
+  params: Joi.object().keys({ userId: Joi.string().required().length(24).hex() }),
+}), getUser);
 
 userRouter.get('/me', getCurrentUserInfo);
 
