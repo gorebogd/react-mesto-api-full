@@ -19,7 +19,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "ghdeploy": "gh-pages -d build",
+    "deploy": "npm run build && scp -r ./build/* gorebogd@84.201.145.163:/home/gorebogd/react-mesto-api-full/frontend"
   },
   "eslintConfig": {
     "extends": [
