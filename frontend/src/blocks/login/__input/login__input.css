@@ -11,6 +11,10 @@
     line-height: 17px;
     outline: none;
   }
+
+  .login__input:last-of-type {
+    margin-bottom: 140px;
+  }
   
   .login__input::placeholder {
     color: #ccc;
